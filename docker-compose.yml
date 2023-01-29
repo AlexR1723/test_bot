@@ -9,14 +9,16 @@ services:
       - "80:80"
   db:
     image: postgres:12.0-alpine
+    restart: always
     volumes:
+      - .:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=alex
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass123
-      - POSTGRES_DB=test_bot_db
+      - POSTGRES_DB=bot_db
 
 volumes:
   postgres_data:

@@ -1,12 +1,13 @@
-from logger import create_logger
-from telegram import Update, Bot, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters, \
     CallbackQueryHandler, JobQueue
 from dotenv import load_dotenv, find_dotenv
 from pytz import country_timezones
-import datetime, time, logging, os, psycopg2, functools, requests, pytz
+import datetime, logging, os, psycopg2, functools, pytz
 
-log = create_logger('app.log', 'func', 10)
+logging.basicConfig(format="%(asctime)s | %(levelname)s | %(module)s | %(message)s", level=logging.INFO,
+                    datefmt='%d.%m.%y %H:%M:%S')
+log = logging.getLogger(__name__)
 load_dotenv(find_dotenv())
 db_connection = psycopg2.connect(
     database=os.environ.get('database_name'),
@@ -98,8 +99,8 @@ async def daily_sum(context: ContextTypes.DEFAULT_TYPE):
             total += amount
         text = f"{date.strftime('%Y-%m-%d')}\n"
         for name, amount in exps_total.items():
-            text += f'{name}: {amount if int(amount)!=amount else int(amount)}\n'
-        text += f'Total: {total if int(total)!=total else int(total)}'
+            text += f'{name}: {amount if int(amount) != amount else int(amount)}\n'
+        text += f'Total: {total if int(total) != total else int(total)}'
     else:
         text = "Сегодня у вас нет расходов."
     await context.bot.send_message(chat_id=context.job.chat_id, text=text)
@@ -112,7 +113,7 @@ def checking():
             await get_user_db_id(*args)
             await get_user_tz(*args)
             await create_daily_job(*args)
-            args[1].user_data['action']=0
+            args[1].user_data['action'] = 0
             return await func(*args)
 
         return wrapped
