@@ -1,11 +1,22 @@
 version: '3'
 services:
   app:
-      build: ./app
-      restart: always
-      volumes:
-        - ./app:/app
-      ports:
-        - "5000:5000"
-      #logging:
-        #driver: none
+    build: ./app
+    restart: always
+    volumes:
+      - ./app:/app
+    ports:
+      - "80:80"
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=alex
+      - POSTGRES_PASSWORD=pass123
+      - POSTGRES_DB=test_bot_db
+
+volumes:
+  postgres_data:
